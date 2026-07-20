@@ -6,7 +6,7 @@ EMAIL = "aggelos.mouzakitis@gmail.com"
 MAILTO = "mailto:aggelos.mouzakitis@gmail.com?subject=Επικοινωνία"
 
 
-def build(rel, sec, sec_html, faq, diag_cta, il, footer):
+def build(rel, A, sec, sec_html, faq, diag_cta, il):
     pages = []
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -29,10 +29,6 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
           <div class="t-name">Career Coaching</div>
           <div class="t-desc">Αλλαγή καριέρας, μετάβαση, επαναπροσδιορισμός — όταν η απόφαση αφορά ταυτότητα και ρίσκο, όχι μόνο τον επόμενο ρόλο.</div>
         </a>
-        <a class="topic" href="{rel(d,'imposter-syndrome')}">
-          <div class="t-name">Imposter Syndrome</div>
-          <div class="t-desc">Σύνδρομο του απατεώνα: αντικειμενική επάρκεια που συνυπάρχει με το επίμονο αίσθημα ότι δεν αξίζετε τη θέση σας.</div>
-        </a>
       </div>
     </div>"""
 
@@ -50,7 +46,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         </div>
       </div>
       <div class="hero-img">
-        <img src="{IMG}/aggelos-homepage.webp" alt="Ο Άγγελος Μουζακίτης σε ομιλία" loading="eager" fetchpriority="high" decoding="async">
+        <img src="{A(0,'img/aggelos-homepage.webp')}" alt="Ο Άγγελος Μουζακίτης σε ομιλία" loading="eager" fetchpriority="high" decoding="async">
       </div>
     </div>
     {topics}
@@ -62,6 +58,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="", depth=0, wrap="wrap-home",
         title="Σύμβουλος Ψυχικής Υγείας για στελέχη, founders & επαγγελματίες | Aggelos Mouzakitis",
         desc="Σύμβουλος Ψυχικής Υγείας με υπόβαθρο founder και ηγεσίας στην τεχνολογία. Executive Coaching, Burnout, Career Coaching & Imposter Syndrome — με ψυχολογικό βάθος και πραγματική επαγγελματική εμπειρία.",
+        og="img/og/home.png",
         main=home_main,
     ))
 
@@ -70,7 +67,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
     # ─────────────────────────────────────────────────────────────────────────
     d = 1
     howiwork_main = f"""
-    <h1>Πώς δουλεύω</h1>
+    <h1>Μέθοδος — πώς δουλεύω</h1>
     <p class="lead">Δουλεύουμε ταυτόχρονα σε δύο επίπεδα: το πρακτικό ζήτημα που έχετε μπροστά σας και το ψυχολογικό μοτίβο που το τροφοδοτεί. Το ένα χωρίς το άλλο δεν κρατάει.</p>
 
     <section class="block">
@@ -116,8 +113,9 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
     """
     pages.append(dict(
         slug="how-i-work", depth=d,
-        title="Πώς δουλεύω — Ο συνδυασμός πρακτικής & ψυχολογικής δουλειάς | Aggelos Mouzakitis",
-        desc="Πώς δουλεύω: δύο επίπεδα ταυτόχρονα — το πρακτικό ζήτημα και το ψυχολογικό μοτίβο από κάτω. Ούτε tactical coaching, ούτε αφηρημένη συζήτηση.",
+        title="Μέθοδος — Ο συνδυασμός πρακτικής & ψυχολογικής δουλειάς | Aggelos Mouzakitis",
+        desc="Η μέθοδός μου: δύο επίπεδα ταυτόχρονα — το πρακτικό ζήτημα και το ψυχολογικό μοτίβο από κάτω. Ούτε tactical coaching, ούτε αφηρημένη συζήτηση.",
+        og="img/og/how-i-work.png",
         main=howiwork_main,
     ))
 
@@ -128,7 +126,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
     about_main = f"""
     <h1>Σχετικά</h1>
     <div style="display:flex;gap:1.2rem;align-items:center;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid rgba(40,39,38,.12)">
-      <img src="{IMG}/aggelos.webp" alt="Άγγελος Μουζακίτης" width="64" height="64" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0;display:block">
+      <img src="{A(1,'img/aggelos.webp')}" alt="Άγγελος Μουζακίτης" width="64" height="64" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0;display:block">
       <div>
         <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#777">Σύμβουλος Ψυχικής Υγείας</div>
         <div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#999;margin-top:4px">Πρώην founder & στέλεχος τεχνολογίας</div>
@@ -145,7 +143,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
 
     {sec("Ο συνδυασμός: επαγγελματική & ψυχολογική κατανόηση",
          "Δουλεύω σε δύο επίπεδα ταυτόχρονα. Το <strong>πρακτικό επίπεδο</strong> είναι η πραγματική απόφαση μπροστά σας. Το <strong>ψυχολογικό επίπεδο</strong> βρίσκει το μοτίβο που τροφοδοτεί το πρόβλημα και δουλεύει να το αλλάξει.",
-         f"Δεν είναι θεραπεία «κατά το πρωτόκολλο», ούτε coaching με έτοιμο framework. Είναι μια σχέση εμπιστοσύνης με κάποιον που έχει καθίσει στη δική σας θέση, νοιάζεται πραγματικά για το πώς θα πάει, και θα σας πει και το δύσκολο κατάματα. Περισσότερα για τη μέθοδο στο {il(d,'how-i-work','πώς δουλεύω')}.")}
+         f"Δεν είναι θεραπεία «κατά το πρωτόκολλο», ούτε coaching με έτοιμο framework. Είναι μια σχέση εμπιστοσύνης με κάποιον που έχει καθίσει στη δική σας θέση, νοιάζεται πραγματικά για το πώς θα πάει, και θα σας πει και το δύσκολο κατάματα. Περισσότερα για {il(d,'how-i-work','τη μέθοδό μου')}.")}
 
     {sec_html("Με ποιους δουλεύω",
          f"<p>Στελέχη, {il(d,'executive-coaching','executives')}, founders, ελεύθερους επαγγελματίες και έμπειρους professionals. Ανθρώπους που, με τα εξωτερικά κριτήρια, τα πάνε καλά — αλλά διαισθάνονται ότι κάτι στον τρόπο που λειτουργούν τους κοστίζει, στη δουλειά και στους ίδιους. Συχνά το θέμα εμφανίζεται ως {il(d,'burnout','burnout')}, {il(d,'career-coaching','αλλαγή καριέρας')} ή {il(d,'imposter-syndrome','imposter syndrome')}.</p>")}
@@ -165,6 +163,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="about", depth=d,
         title="Σχετικά με τον Άγγελο Μουζακίτη — Σύμβουλος Ψυχικής Υγείας & πρώην founder",
         desc="Σύμβουλος Ψυχικής Υγείας με 18+ χρόνια σε product, growth και founder ρόλους. Γιατί μπορεί να δουλέψει και με το επαγγελματικό πρόβλημα και με τον άνθρωπο πίσω από αυτό.",
+        og="img/og/about.png",
         main=about_main,
     ))
 
@@ -217,6 +216,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="executive-coaching", depth=d,
         title="Executive Coaching για στελέχη | Coaching στελεχών με ψυχολογικό βάθος",
         desc="Executive Coaching για στελέχη και ανώτερους professionals: πίεση, ευθύνη, δύσκολες αποφάσεις, μοναξιά στην κορυφή και burnout στελεχών — από Σύμβουλο Ψυχικής Υγείας & πρώην tech leader.",
+        og="img/og/therapy-for-executives.png",
         main=exec_main,
     ))
 
@@ -269,6 +269,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="burnout", depth=d,
         title="Burnout: συμπτώματα & αντιμετώπιση | Επαγγελματική εξουθένωση",
         desc="Burnout / επαγγελματική εξουθένωση: τι είναι, συμπτώματα, γιατί η ξεκούραση δεν αρκεί και πότε χρειάζεται υποστήριξη. Δωρεάν Burnout Diagnostic. Για στελέχη, founders & επαγγελματίες.",
+        og="img/og/executive-burnout-therapy.png",
         main=burnout_main,
     ))
 
@@ -317,6 +318,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="career-coaching", depth=d,
         title="Career Coaching & αλλαγή καριέρας | Σύμβουλος καριέρας με ψυχολογικό βάθος",
         desc="Career Coaching για έμπειρους επαγγελματίες: αλλαγή καριέρας ή επαγγέλματος, μετάβαση, independent, επαναπροσδιορισμός. Όταν η απόφαση αφορά ταυτότητα & ρίσκο — όχι μόνο τον επόμενο ρόλο.",
+        og="img/og/career-transition-therapy.png",
         main=career_main,
     ))
 
@@ -365,6 +367,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="imposter-syndrome", depth=d,
         title="Imposter Syndrome (σύνδρομο του απατεώνα) στη δουλειά | Συμπτώματα & αντιμετώπιση",
         desc="Imposter syndrome / σύνδρομο του απατεώνα στη δουλειά: σημάδια, συμπτώματα, γιατί δυναμώνει με την άνοδο, και πώς συνδέεται με burnout και αποφάσεις καριέρας. Για high performers & στελέχη.",
+        og="img/og/imposter-syndrome-therapy.png",
         main=imp_main,
     ))
 
@@ -416,6 +419,7 @@ def build(rel, sec, sec_html, faq, diag_cta, il, footer):
         slug="confidentiality", depth=d,
         title="Εμπιστευτικότητα | Aggelos Mouzakitis",
         desc="Πώς λειτουργεί η εμπιστευτικότητα: τίποτα δεν γυρίζει σε συναδέλφους, managers, εργοδότες, HR, επενδυτές, συνεργάτες, πελάτες ή οικογένεια — και πού είναι τα ειλικρινή όρια.",
+        og="img/og/confidentiality.png",
         main=conf_main,
     ))
 

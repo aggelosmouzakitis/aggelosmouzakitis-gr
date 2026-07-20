@@ -27,18 +27,18 @@ DIAG_STYLE = """
 """
 
 
-def render(head, mobile_nav, sidebar, footer, JS, rel):
+def render(head, sidebar, footer, mobile_nav, JS, rel):
     d = 1
     slug = "burnout-diagnostic"
     ft = footer(d)
-    inner = (head(TITLE, DESC, slug, d)
-             + mobile_nav(slug, d)
+    inner = (head(TITLE, DESC, slug, d, "img/og/burnout-diagnostic.png")
              + '<div id="root">'
              + sidebar(slug, d)
              + '<div id="main-scroll"><main class="wrap">'
              + DIAG_STYLE
              + '<div id="diag-app"></div>'
              + '</main></div></div>'
+             + mobile_nav(slug, d)
              + JS
              + DIAG_JS.replace("__FOOTER__", ft.replace("\\", "\\\\").replace("`", "\\`").replace("</", "<\\/"))
              + "\n</body>\n</html>\n")
