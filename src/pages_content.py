@@ -45,7 +45,7 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
         {diag_and_contact(d)}
       </div>
       <div class="hero-img">
-        <img src="{A(0,'img/aggelos-homepage.webp')}" alt="Ο Άγγελος Μουζακίτης σε ομιλία" loading="eager" fetchpriority="high" decoding="async">
+        <img src="{A(0,'img/aggelos-homepage.webp')}" alt="Ο Άγγελος Μουζακίτης σε ομιλία" width="1000" height="1250" loading="eager" fetchpriority="high" decoding="async">
       </div>
     </div>
     {topics}
@@ -56,9 +56,10 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
 
     pages.append(dict(
         slug="", depth=0, wrap="wrap-home",
-        title="Σύμβουλος Ψυχικής Υγείας για στελέχη, founders & επαγγελματίες | Aggelos Mouzakitis",
-        desc="Σύμβουλος Ψυχικής Υγείας με υπόβαθρο founder και ηγεσίας στην τεχνολογία. Executive Coaching, Burnout, Career Coaching & Imposter Syndrome — με ψυχολογικό βάθος και πραγματική επαγγελματική εμπειρία.",
+        title="Σύμβουλος Ψυχικής Υγείας για στελέχη & founders",
+        desc="Executive Coaching, Burnout, Career Coaching & Imposter Syndrome για στελέχη και founders — με ψυχολογικό βάθος και πραγματική επαγγελματική εμπειρία.",
         og="img/og/home.png",
+        preload="img/aggelos-homepage.webp",
         main=home_main,
     ))
 
@@ -70,7 +71,7 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     <p style="font-size:18px;line-height:1.75;margin:0 0 1rem">Μπορεί να έρχεσαι με μια απόφαση, μια περίοδο burnout, μια αλλαγή καριέρας ή ένα μοτίβο που επαναλαμβάνεται στη δουλειά σου. Δεν αφήνουμε ούτε την πρακτική πραγματικότητα ούτε την ψυχολογική πλευρά έξω από τη συζήτηση.</p>
 
     <section class="block">
-      <div class="kick">Δύο επίπεδα, στην ίδια δουλειά</div>
+      <h2 class="kick">Δύο επίπεδα, στην ίδια δουλειά</h2>
       <p style="font-size:16px;line-height:1.7;margin:0 0 1.1rem">Οι περισσότεροι άνθρωποι έρχονται με κάτι συγκεκριμένο: μια απόφαση που αναβάλλεται, μια πίεση που έχει γίνει μόνιμη, μια καριέρα που δεν τους ταιριάζει πια ή ένα επαγγελματικό πρόβλημα που επιστρέφει παρά τις προσπάθειές τους. Για να το καταλάβουμε πραγματικά, χρειάζεται να κοιτάξουμε και τα δύο επίπεδα.</p>
       <div class="grid2">
         <div class="card"><h3>Το πρακτικό επίπεδο</h3><p>Τι συμβαίνει αντικειμενικά; Ποια απόφαση χρειάζεται να πάρεις; Ποιες επιλογές έχεις; Ποιο είναι το πραγματικό ρίσκο; Τι εξαρτάται από εσένα και τι όχι; Εδώ μπορεί να δουλέψουμε με στρατηγική, προτεραιότητες, σχέδιο μετάβασης ή τα επόμενα συγκεκριμένα βήματα.</p></div>
@@ -79,7 +80,7 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     </section>
 
     <section class="block">
-      <div class="kick">Τι σημαίνει αυτό στην πράξη</div>
+      <h2 class="kick">Τι σημαίνει αυτό στην πράξη</h2>
       <p style="font-size:16px;line-height:1.7;margin:0 0 1rem">Μια συνεδρία μπορεί να περιλαμβάνει όλα τα παρακάτω, ακόμη και μέσα στην ίδια ώρα.</p>
       <div class="plist">
         <div class="row"><span class="cause">Ξεκαθάρισμα του ζητήματος</span><span class="arw">→</span><span>Βάζουμε σε τάξη αυτό που συμβαίνει και ξεχωρίζουμε το πραγματικό πρόβλημα από τον θόρυβο γύρω του.</span></div>
@@ -90,14 +91,14 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     </section>
 
     <section class="block">
-      <div class="kick">Πρακτική δουλειά με ψυχολογικό βάθος</div>
+      <h2 class="kick">Πρακτική δουλειά με ψυχολογικό βάθος</h2>
       <p style="font-size:16px;line-height:1.7;margin:0 0 .6rem">Η προσέγγισή μου δεν είναι απλώς coaching με στόχους, ασκήσεις και ένα έτοιμο framework. Δεν είναι όμως ούτε μια συζήτηση αποκομμένη από την πραγματικότητα της δουλειάς σου. Συνδυάζει:</p>
       {ul(["πρακτική σκέψη","επαγγελματική εμπειρία","κατανόηση του επιχειρηματικού και εταιρικού περιβάλλοντος","συμβουλευτική ψυχικής υγείας","και δουλειά πάνω στα μοτίβα που επηρεάζουν τις επιλογές και τη συμπεριφορά σου"])}
       <div class="callout">Πριν γίνω Σύμβουλος Ψυχικής Υγείας, πέρασα περισσότερα από 18 χρόνια στην τεχνολογία, το product και το growth. Έχω υπάρξει founder, έχω δουλέψει σε startups και μεγάλους οργανισμούς και έχω συμβουλεύσει περισσότερες από 500 επιχειρήσεις. Αυτό σημαίνει ότι δεν χρειάζεται να διαλέξεις ανάμεσα σε κάποιον που καταλαβαίνει τον επαγγελματικό κόσμο και κάποιον που μπορεί να δουλέψει με ό,τι συμβαίνει από κάτω.</div>
     </section>
 
     <section class="block">
-      <div class="kick">Πώς ξεκινάμε</div>
+      <h2 class="kick">Πώς ξεκινάμε</h2>
       <div class="grid3">
         <div class="card"><h3>1 · Πρώτη επικοινωνία</h3><p>Μου στέλνεις ένα σύντομο μήνυμα με λίγα λόγια για το ζήτημα που σε απασχολεί. Δεν χρειάζεται να γράψεις ολόκληρη την ιστορία σου — αρκεί να καταλάβω τι συμβαίνει και τι είδους βοήθεια αναζητάς.</p></div>
         <div class="card"><h3>2 · Πρώτη συνεδρία</h3><p>Εξετάζουμε τι σε έφερε, τι έχεις ήδη δοκιμάσει και τι θα ήθελες να αλλάξει. Στόχος δεν είναι μια βιαστική διάγνωση ή ένα μεγάλο πλάνο, αλλά μια καθαρή πρώτη εικόνα — και να δούμε αν ο τρόπος που δουλεύω σου ταιριάζει.</p></div>
@@ -114,9 +115,10 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     """
     pages.append(dict(
         slug="how-i-work", depth=d,
-        title="Πώς δουλεύω — Πρακτική δουλειά με ψυχολογικό βάθος | Aggelos Mouzakitis",
-        desc="Πώς δουλεύω: δύο επίπεδα ταυτόχρονα — το πρακτικό ζήτημα και ό,τι μέσα σου επηρεάζει τον τρόπο που το αντιμετωπίζεις. Ούτε έτοιμο coaching framework, ούτε αφηρημένη συζήτηση.",
+        title="Πώς δουλεύω | Aggelos Mouzakitis",
+        desc="Η μέθοδός μου: δύο επίπεδα ταυτόχρονα — το πρακτικό ζήτημα και το ψυχολογικό μοτίβο από κάτω. Ούτε έτοιμο framework, ούτε αφηρημένη συζήτηση.",
         og="img/og/how-i-work.png",
+        bc="Πώς δουλεύω",
         main=howiwork_main,
     ))
 
@@ -128,7 +130,7 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
       <img src="{A(1,'img/aggelos.webp')}" alt="Άγγελος Μουζακίτης" width="64" height="64" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0;display:block">
       <div>
         <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#777">Σύμβουλος Ψυχικής Υγείας</div>
-        <div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#999;margin-top:4px">Πρώην founder & στέλεχος τεχνολογίας · MSc · BACP</div>
+        <div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#6e6e6e;margin-top:4px">Πρώην founder & στέλεχος τεχνολογίας · MSc · BACP</div>
       </div>
     </div>
     <p class="lead">Είμαι Σύμβουλος Ψυχικής Υγείας, με περισσότερα από 18 χρόνια εμπειρίας στην τεχνολογία, το product και το growth, καθώς και προσωπική εμπειρία ως founder.</p>
@@ -164,9 +166,10 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     """
     pages.append(dict(
         slug="about", depth=d,
-        title="Σχετικά με τον Άγγελο Μουζακίτη — Σύμβουλος Ψυχικής Υγείας & πρώην founder",
-        desc="Σύμβουλος Ψυχικής Υγείας με 18+ χρόνια σε product, growth και founder ρόλους, MSc Integrative Counselling & Psychotherapy (University of Derby), εγγεγραμμένος στο BACP.",
+        title="Σχετικά | Aggelos Mouzakitis, Σύμβουλος Ψυχικής Υγείας",
+        desc="Σύμβουλος Ψυχικής Υγείας με 18+ χρόνια σε product, growth & founder ρόλους. MSc Integrative Counselling & Psychotherapy, εγγεγραμμένος στο BACP.",
         og="img/og/about.png",
+        bc="Σχετικά", ptype="ProfilePage",
         main=about_main,
     ))
 
@@ -246,9 +249,11 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     """
     pages.append(dict(
         slug="burnout", depth=d,
-        title="Burnout: συμπτώματα & αντιμετώπιση | Επαγγελματική εξουθένωση",
-        desc="Burnout / επαγγελματική εξουθένωση: τι είναι, συμπτώματα, τι το συντηρεί, γιατί η ξεκούραση δεν αρκεί και πότε χρειάζεται υποστήριξη. Δωρεάν Burnout Diagnostic.",
+        title="Burnout: συμπτώματα & αντιμετώπιση",
+        desc="Burnout / επαγγελματική εξουθένωση: τι είναι, συμπτώματα, τι το συντηρεί, γιατί η ξεκούραση δεν αρκεί και πότε χρειάζεται υποστήριξη.",
         og="img/og/executive-burnout-therapy.png",
+        bc="Burnout",
+        service={"name":"Burnout Coaching","type":"Burnout Coaching","desc":"Υποστήριξη για burnout / επαγγελματική εξουθένωση — τι το συντηρεί και τι χρειάζεται πραγματικά να αλλάξει."},
         main=burnout_main,
     ))
 
@@ -354,9 +359,11 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     """
     pages.append(dict(
         slug="career-coaching", depth=d,
-        title="Career Coaching & αλλαγή καριέρας | Σύμβουλος καριέρας με ψυχολογικό βάθος",
-        desc="Career Coaching για έμπειρους επαγγελματίες: αλλαγή καριέρας ή επαγγέλματος, μετάβαση, independent work, επαναπροσδιορισμός. Όταν η απόφαση αφορά ταυτότητα & ρίσκο, όχι μόνο τον επόμενο ρόλο.",
+        title="Career Coaching & αλλαγή καριέρας",
+        desc="Career Coaching για έμπειρους επαγγελματίες: αλλαγή καριέρας, μετάβαση, independent — όταν η απόφαση αφορά ταυτότητα και ρίσκο, όχι μόνο τον επόμενο ρόλο.",
         og="img/og/career-transition-therapy.png",
+        bc="Career Coaching",
+        service={"name":"Career Coaching","type":"Career Coaching","desc":"Career Coaching για αλλαγή καριέρας και σημαντικές επαγγελματικές αποφάσεις, σε πρακτικό και ψυχολογικό επίπεδο."},
         main=career_main,
     ))
 
@@ -426,9 +433,11 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     """
     pages.append(dict(
         slug="executive-coaching", depth=d,
-        title="Executive Coaching για στελέχη | Coaching στελεχών με ψυχολογικό βάθος",
-        desc="Executive Coaching για στελέχη και senior professionals: πίεση, ευθύνη, δύσκολες αποφάσεις, απομόνωση στην κορυφή και burnout στελεχών — από Σύμβουλο Ψυχικής Υγείας & πρώην founder/tech leader.",
+        title="Executive Coaching για στελέχη | coaching στελεχών",
+        desc="Executive Coaching / coaching στελεχών με ψυχολογικό βάθος: πίεση, ευθύνη, δύσκολες αποφάσεις, απομόνωση στον ρόλο και burnout στελεχών.",
         og="img/og/therapy-for-executives.png",
+        bc="Executive Coaching",
+        service={"name":"Executive Coaching","type":"Executive Coaching","desc":"Executive Coaching / coaching στελεχών με ψυχολογικό βάθος για στελέχη, founders και senior professionals."},
         main=exec_main,
     ))
 
@@ -476,9 +485,11 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     """
     pages.append(dict(
         slug="imposter-syndrome", depth=d,
-        title="Imposter Syndrome (σύνδρομο του απατεώνα) στη δουλειά | Συμπτώματα & αντιμετώπιση",
-        desc="Imposter syndrome / σύνδρομο του απατεώνα στη δουλειά: σημάδια, συμπτώματα, και πώς συνδέεται με burnout και αποφάσεις καριέρας. Για high performers & στελέχη.",
+        title="Imposter Syndrome (σύνδρομο του απατεώνα)",
+        desc="Imposter syndrome / σύνδρομο του απατεώνα στη δουλειά: σημάδια, συμπτώματα, και σύνδεση με burnout και αποφάσεις καριέρας.",
         og="img/og/imposter-syndrome-therapy.png",
+        bc="Imposter Syndrome",
+        service={"name":"Υποστήριξη για Imposter Syndrome","type":"Coaching","desc":"Δουλειά με το σύνδρομο του απατεώνα στη δουλειά, μέσα στο πραγματικό επαγγελματικό πλαίσιο."},
         main=imp_main,
     ))
 
@@ -556,8 +567,9 @@ def build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     pages.append(dict(
         slug="confidentiality", depth=d,
         title="Εμπιστευτικότητα | Aggelos Mouzakitis",
-        desc="Πώς λειτουργεί η εμπιστευτικότητα: τίποτα δεν επιστρέφει σε συνεργάτες, managers, εργοδότες, HR, επενδυτές, cofounders, πελάτες ή οικογένεια — και πού είναι τα πραγματικά όρια.",
+        desc="Πώς λειτουργεί η εμπιστευτικότητα: τίποτα δεν επιστρέφει σε εργοδότες, HR, επενδυτές, cofounders ή οικογένεια — και ποια είναι τα ειλικρινή όρια.",
         og="img/og/confidentiality.png",
+        bc="Εμπιστευτικότητα",
         main=conf_main,
     ))
 

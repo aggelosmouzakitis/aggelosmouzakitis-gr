@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Self-contained Greek Burnout Diagnostic (vanilla JS port of diagnostic.jsx)."""
 
-TITLE = "Burnout Diagnostic — Δωρεάν τεστ αυτοαξιολόγησης | Aggelos Mouzakitis"
-DESC = ("Burnout Diagnostic: ένα σύντομο, δωρεάν τεστ αυτοαξιολόγησης (~8 λεπτά) για να δείτε "
-        "αν αυτό που περνάτε μοιάζει με burnout, σε ποιο επίπεδο και πού να εστιάσετε. Όχι κλινική διάγνωση.")
+TITLE = "Burnout Diagnostic — δωρεάν τεστ αυτοαξιολόγησης"
+DESC = ("Δωρεάν εργαλείο αυτοαξιολόγησης (~8′): δες αν αυτό που περνάς μοιάζει με burnout, "
+        "σε ποιο επίπεδο και πού να εστιάσεις. Ενδεικτικό, όχι κλινική διάγνωση.")
 
 DIAG_STYLE = """
 <style>
@@ -31,7 +31,7 @@ def render(head, sidebar, footer, mobile_nav, JS, rel):
     d = 1
     slug = "burnout-diagnostic"
     ft = footer(d)
-    inner = (head(TITLE, DESC, slug, d, "img/og/burnout-diagnostic.png")
+    inner = (head(TITLE, DESC, slug, d, "img/og/burnout-diagnostic.png", bc="Burnout Diagnostic")
              + '<div id="root">'
              + sidebar(slug, d)
              + '<div id="main-scroll"><main class="wrap">'

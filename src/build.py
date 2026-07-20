@@ -8,7 +8,7 @@ Links AND assets are relative + depth-aware, so the site works both under a
 GitHub Pages project sub-path (preview) and later at a root domain.
 Photos, OG images and favicons are self-hosted (copied from the original site).
 """
-import os, shutil
+import os, shutil, json, re, html as _html
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "site")
@@ -78,6 +78,10 @@ CSS = f"""
 html,body,#root{{height:100%}}
 body{{background:{BG};font-family:'Libre Franklin',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;color:{TEXT}}}
 ::selection{{background:{TEXT};color:#fff}}
+.skip-link{{position:absolute;left:-9999px;top:0;z-index:1000;background:{ACCENT};color:#fff;padding:10px 16px;font-weight:700;text-decoration:none}}
+.skip-link:focus{{left:8px;top:8px}}
+a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{{outline:3px solid {ACCENT};outline-offset:2px;border-radius:2px}}
+@media (prefers-reduced-motion: reduce){{*{{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}}}
 #root{{display:flex;overflow:hidden}}
 #main-scroll{{flex:1;overflow-y:auto;overflow-x:hidden;background:#fff;color:{TEXT}}}
 #main-scroll a{{color:{ACCENT};text-underline-offset:3px;text-decoration-thickness:1px}}
@@ -115,7 +119,7 @@ body{{background:{BG};font-family:'Libre Franklin',-apple-system,BlinkMacSystemF
 .sb-spacer{{flex:1}}
 .sb-cta-wrap{{padding:0 16px 22px;flex-shrink:0}}
 .sb-cta-box{{border:1.5px solid rgba(26,127,55,.45);padding:19px;background:rgba(26,127,55,.08)}}
-.sb-cta-lbl{{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{ACCENT};margin-bottom:9px}}
+.sb-cta-lbl{{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{ACCENT_D};margin-bottom:9px}}
 .sb-cta-txt{{font-size:14px;font-weight:500;color:{TEXT};line-height:1.6;margin-bottom:16px}}
 .sb-cta-btn{{display:block;text-align:center;width:100%;padding:13px 0;font-family:inherit;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;background:{ACCENT};border:1.5px solid {ACCENT};color:#fff;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}}
 .sb-cta-btn:hover{{background:{ACCENT_D};border-color:{ACCENT_D}}}
@@ -127,7 +131,7 @@ body{{background:{BG};font-family:'Libre Franklin',-apple-system,BlinkMacSystemF
   #sidebar{{display:none}}
   #main-scroll{{height:100%;padding-bottom:80px}}
   #mnav{{display:flex;position:fixed;left:0;right:0;bottom:0;height:64px;background:{BG};border-top:1px solid rgba(40,39,38,.1);align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom)}}
-  #mnav a{{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;text-decoration:none;color:rgba(40,39,38,.55);font-size:10px;letter-spacing:.06em;text-transform:uppercase;transition:color .15s}}
+  #mnav a{{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;text-decoration:none;color:#565654;font-size:10px;letter-spacing:.06em;text-transform:uppercase;transition:color .15s}}
   #mnav a.active{{color:{ACCENT}}}
 }}
 
@@ -212,59 +216,167 @@ hr.sep{{border:none;border-top:1px solid rgba(40,39,38,.2);margin:2.5rem 0}}
 }}
 """
 
-PERSON_LD = ('{"@context":"https://schema.org","@type":"Person","name":"Aggelos Mouzakitis",'
-    '"alternateName":"Άγγελος Μουζακίτης","url":"' + BASE_URL + '/","image":"' + BASE_URL + '/img/aggelos.jpg",'
-    '"jobTitle":["Σύμβουλος Ψυχικής Υγείας","Mental Health Counsellor"],'
-    '"description":"Σύμβουλος Ψυχικής Υγείας με υπόβαθρο founder και ηγετικό ρόλο στην τεχνολογία. Δουλεύει με έμπειρους επαγγελματίες, στελέχη, founders και ελεύθερους επαγγελματίες σε burnout, μεταβάσεις καριέρας, πίεση ηγεσίας και imposter syndrome.",'
-    '"knowsAbout":["Executive Coaching","Burnout","Career Coaching","Imposter Syndrome","Επαγγελματική εξουθένωση","Σύνδρομο του απατεώνα","Συμβουλευτική στελεχών","Αλλαγή καριέρας"],'
-    '"sameAs":["' + LINKEDIN + '","' + YOUTUBE + '"],"@id":"' + BASE_URL + '/#person"}')
+SITE_NAME = "Aggelos Mouzakitis"
+PERSON_ID = BASE_URL + "/#person"
+ORG_ID    = BASE_URL + "/#practice"
+SITE_ID   = BASE_URL + "/#website"
+BUILD_DATE = "2026-07-20"
 
 
-def head(title, desc, slug, depth, og, extra_ld=""):
+def strip_html(s):
+    s = re.sub(r"<[^>]+>", "", s)
+    return _html.unescape(re.sub(r"\s+", " ", s)).strip()
+
+
+def _person():
+    return {
+        "@type": "Person", "@id": PERSON_ID,
+        "name": "Aggelos Mouzakitis", "alternateName": "Άγγελος Μουζακίτης",
+        "url": BASE_URL + "/", "image": BASE_URL + "/img/aggelos.jpg",
+        "jobTitle": "Σύμβουλος Ψυχικής Υγείας",
+        "description": ("Σύμβουλος Ψυχικής Υγείας με υπόβαθρο founder και 18+ χρόνια σε product, "
+                        "growth και τεχνολογία. Δουλεύει με στελέχη, founders και έμπειρους επαγγελματίες "
+                        "σε burnout, αλλαγή καριέρας, πίεση ηγεσίας και imposter syndrome."),
+        "knowsAbout": ["Executive Coaching", "Burnout", "Career Coaching", "Imposter Syndrome",
+                       "Επαγγελματική εξουθένωση", "Σύνδρομο του απατεώνα", "Συμβουλευτική στελεχών",
+                       "Αλλαγή καριέρας", "Ψυχική υγεία", "Ηγεσία"],
+        "alumniOf": {"@type": "CollegeOrUniversity", "name": "University of Derby"},
+        "hasCredential": {"@type": "EducationalOccupationalCredential",
+                          "credentialCategory": "MSc Integrative Counselling & Psychotherapy"},
+        "memberOf": {"@type": "Organization", "name": "British Association for Counselling and Psychotherapy",
+                     "alternateName": "BACP", "url": "https://www.bacp.co.uk"},
+        "sameAs": [LINKEDIN, YOUTUBE, INSTAGRAM],
+    }
+
+
+def _website():
+    return {"@type": "WebSite", "@id": SITE_ID, "url": BASE_URL + "/", "name": SITE_NAME,
+            "inLanguage": "el-GR", "publisher": {"@id": PERSON_ID}}
+
+
+def _practice():
+    return {
+        "@type": "ProfessionalService", "@id": ORG_ID, "name": SITE_NAME,
+        "url": BASE_URL + "/", "image": BASE_URL + "/img/aggelos.jpg",
+        "description": ("Σύμβουλος Ψυχικής Υγείας για στελέχη, founders και έμπειρους επαγγελματίες — "
+                        "Executive Coaching, Burnout, Career Coaching και Imposter Syndrome, με ψυχολογικό βάθος."),
+        "founder": {"@id": PERSON_ID}, "provider": {"@id": PERSON_ID},
+        "areaServed": {"@type": "Country", "name": "Greece"},
+        "availableLanguage": ["el", "en"],
+        "knowsAbout": ["Executive Coaching", "Burnout", "Career Coaching", "Imposter Syndrome"],
+        "sameAs": [LINKEDIN, YOUTUBE, INSTAGRAM],
+    }
+
+
+def page_ld(title, desc, canonical, og_img, depth, bc, faq_items, service, ptype, is_home):
+    g = [_person(), _website()]
+    if is_home:
+        g.append(_practice())
+    webpage = {
+        "@type": ptype, "@id": canonical + "#webpage", "url": canonical, "name": title,
+        "description": desc, "isPartOf": {"@id": SITE_ID}, "inLanguage": "el-GR",
+        "about": {"@id": PERSON_ID}, "primaryImageOfPage": og_img,
+        "datePublished": "2026-07-20", "dateModified": BUILD_DATE,
+    }
+    # Breadcrumbs
+    crumbs = [{"@type": "ListItem", "position": 1, "name": "Αρχική", "item": BASE_URL + "/"}]
+    if bc:
+        crumbs.append({"@type": "ListItem", "position": 2, "name": bc, "item": canonical})
+    bc_node = {"@type": "BreadcrumbList", "@id": canonical + "#breadcrumb", "itemListElement": crumbs}
+    webpage["breadcrumb"] = {"@id": canonical + "#breadcrumb"}
+    g.append(webpage)
+    g.append(bc_node)
+    if service:
+        g.append({"@type": "Service", "name": service["name"], "serviceType": service.get("type", service["name"]),
+                  "url": canonical, "provider": {"@id": PERSON_ID},
+                  "areaServed": {"@type": "Country", "name": "Greece"},
+                  "audience": {"@type": "Audience", "audienceType": "στελέχη, founders, επαγγελματίες"},
+                  "description": service["desc"]})
+    if faq_items:
+        g.append({"@type": "FAQPage", "@id": canonical + "#faq",
+                  "mainEntity": [{"@type": "Question", "name": strip_html(q),
+                                  "acceptedAnswer": {"@type": "Answer", "text": strip_html(a)}}
+                                 for q, a in faq_items]})
+    doc = {"@context": "https://schema.org", "@graph": g}
+    return '<script type="application/ld+json">' + json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + '</script>'
+
+
+_LAT = ("U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,"
+        "U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD")
+_LATX = ("U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,"
+         "U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF")
+
+
+def fontface(depth):
+    # Self-hosted Libre Franklin (Latin subsets) — Greek text falls back to the system stack,
+    # since Libre Franklin ships no Greek glyphs. No third-party font request (privacy + perf).
+    return (f"@font-face{{font-family:'Libre Franklin';font-style:normal;font-weight:400 700;"
+            f"font-display:swap;src:url({A(depth,'fonts/lf-latin.woff2')}) format('woff2');unicode-range:{_LAT}}}"
+            f"@font-face{{font-family:'Libre Franklin';font-style:normal;font-weight:400 700;"
+            f"font-display:swap;src:url({A(depth,'fonts/lf-latin-ext.woff2')}) format('woff2');unicode-range:{_LATX}}}")
+
+
+def head(title, desc, slug, depth, og, bc=None, faq_items=None, service=None,
+         ptype="WebPage", preload=None, og_alt=""):
     canonical = BASE_URL + "/" + (slug + "/" if slug else "")
     og_img = BASE_URL + "/" + og
-    ld = '<script type="application/ld+json">' + PERSON_LD + '</script>'
-    if extra_ld:
-        ld += '<script type="application/ld+json">' + extra_ld + '</script>'
+    og_alt = og_alt or title
+    is_home = (slug == "")
+    preload_tag = (f'<link rel="preload" as="image" href="{A(depth, preload)}" fetchpriority="high">'
+                   if preload else "")
+    ld = page_ld(title, desc, canonical, og_img, depth, bc, faq_items, service, ptype, is_home)
     return f"""<!DOCTYPE html>
 <html lang="el-GR">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{GA_ID}');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&display=swap">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="canonical" href="{canonical}">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="preload" as="font" type="font/woff2" href="{A(depth,'fonts/lf-latin.woff2')}" crossorigin>
+{preload_tag}
 <link rel="icon" href="{A(depth,'favicon.svg')}" type="image/svg+xml">
 <link rel="icon" href="{A(depth,'favicon.ico')}" sizes="32x32">
 <link rel="apple-touch-icon" href="{A(depth,'apple-touch-icon.png')}">
 <link rel="manifest" href="{A(depth,'manifest.json')}">
-<title>{title}</title>
-<meta name="description" content="{desc}">
-<link rel="canonical" href="{canonical}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{og_img}">
+<meta property="og:image:secure_url" content="{og_img}">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{og_alt}">
 <meta property="og:locale" content="el_GR">
-<meta property="og:site_name" content="Aggelos Mouzakitis">
+<meta property="og:site_name" content="{SITE_NAME}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="{og_img}">
+<meta name="twitter:image:alt" content="{og_alt}">
 <meta name="author" content="Aggelos Mouzakitis">
 <meta name="theme-color" content="{BG}">
-<link rel="alternate" hreflang="el-GR" href="{canonical}">
+<link rel="alternate" hreflang="el-gr" href="{canonical}">
+<link rel="alternate" hreflang="el" href="{canonical}">
 <link rel="alternate" hreflang="x-default" href="{canonical}">
 {ld}
-<style>{CSS}</style>
+<style>{fontface(depth)}{CSS}</style>
 </head>
-<body>"""
+<body>
+<a class="skip-link" href="#main-scroll">Μετάβαση στο περιεχόμενο</a>
+<script>
+// Defer Google Analytics until idle so it never blocks first paint.
+(function(){{var l=function(){{if(window.__ga)return;window.__ga=1;
+var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id={GA_ID}';
+document.head.appendChild(s);window.dataLayer=window.dataLayer||[];function g(){{dataLayer.push(arguments);}}
+window.gtag=g;g('js',new Date());g('config','{GA_ID}');}};
+var go=function(){{if('requestIdleCallback' in window){{requestIdleCallback(l);}}else{{setTimeout(l,1);}}}};
+if(document.readyState==='complete'){{go();}}else{{window.addEventListener('load',go);}}
+}})();
+</script>"""
 
 
 # ── Sidebar (original layout, CTA pinned at the bottom) ──────────────────────
@@ -366,9 +478,9 @@ def footer(depth):
     <div class="site-ft-col">
       <div class="site-ft-h">Ακολουθήστε</div>
       <div class="site-ft-social">
-        <a href="{LINKEDIN}" target="_blank" rel="noopener" title="LinkedIn">{IC_LI}</a>
-        <a href="{YOUTUBE}" target="_blank" rel="noopener" title="YouTube">{IC_YT}</a>
-        <a href="{INSTAGRAM}" target="_blank" rel="noopener" title="Instagram">{IC_IG}</a>
+        <a href="{LINKEDIN}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">{IC_LI}</a>
+        <a href="{YOUTUBE}" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">{IC_YT}</a>
+        <a href="{INSTAGRAM}" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">{IC_IG}</a>
       </div>
     </div>
   </div>
@@ -376,11 +488,15 @@ def footer(depth):
 </footer>"""
 
 
-def page(slug, depth, title, desc, main_html, og, extra_ld="", wrap="wrap"):
-    return (head(title, desc, slug, depth, og, extra_ld)
+def page(slug, depth, title, desc, main_html, og, wrap="wrap",
+         bc=None, service=None, ptype="WebPage", preload=None):
+    # Auto-extract FAQ Q&A from the rendered HTML for FAQPage schema (AEO).
+    faq_items = re.findall(r'<div class="qa"><h3>(.*?)</h3>(.*?)</div>', main_html, re.S) or None
+    return (head(title, desc, slug, depth, og, bc=bc, faq_items=faq_items,
+                 service=service, ptype=ptype, preload=preload)
             + '<div id="root">'
             + sidebar(slug, depth)
-            + f'<div id="main-scroll"><main class="{wrap}">'
+            + f'<div id="main-scroll"><main id="main" class="{wrap}">'
             + main_html
             + footer(depth)
             + '</main></div></div>'
@@ -451,16 +567,17 @@ for name in os.listdir(ASSETS):
 
 import pages_content as PC
 for spec in PC.build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
-    emit(spec["slug"], page(spec["slug"], spec["depth"], spec["title"],
-                            spec["desc"], spec["main"], spec["og"],
-                            spec.get("extra_ld", ""), spec.get("wrap", "wrap")))
+    emit(spec["slug"], page(spec["slug"], spec["depth"], spec["title"], spec["desc"],
+                            spec["main"], spec["og"], wrap=spec.get("wrap", "wrap"),
+                            bc=spec.get("bc"), service=spec.get("service"),
+                            ptype=spec.get("ptype", "WebPage"), preload=spec.get("preload")))
 
 import diagnostic_page as DP
 emit("burnout-diagnostic", DP.render(head, sidebar, footer, mobile_nav, JS, rel))
 
 # 404
-_404 = page("", 0, "Η σελίδα δεν βρέθηκε | Aggelos Mouzakitis",
-            "Η σελίδα που ζητήσατε δεν υπάρχει.", "img/og/home.png",
+_404 = page("", 0, "Η σελίδα δεν βρέθηκε (404) | Aggelos Mouzakitis",
+            "Η σελίδα που ζητήσατε δεν υπάρχει ή έχει μετακινηθεί.", "img/og/home.png",
             '<h1>Η σελίδα δεν βρέθηκε</h1><p class="lead">Η σελίδα που ζητήσατε δεν υπάρχει ή έχει μετακινηθεί.</p>'
             '<p><a class="cta-btn" href="./">Επιστροφή στην αρχική →</a></p>')
 with open(os.path.join(OUT, "404.html"), "w", encoding="utf-8") as f:
@@ -470,17 +587,68 @@ with open(os.path.join(OUT, "404.html"), "w", encoding="utf-8") as f:
 order = ["", "how-i-work", "executive-coaching", "burnout", "career-coaching",
          "imposter-syndrome", "burnout-diagnostic", "about", "confidentiality"]
 sm = ['<?xml version="1.0" encoding="UTF-8"?>',
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+      'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
 for u in [x for x in order if x in PAGES_OUT]:
     loc = BASE_URL + "/" + (u + "/" if u else "")
     pr = "1.0" if u == "" else ("0.9" if u in ("burnout", "career-coaching", "burnout-diagnostic") else "0.8")
-    sm.append(f"  <url><loc>{loc}</loc><changefreq>monthly</changefreq><priority>{pr}</priority></url>")
+    sm.append(f'  <url><loc>{loc}</loc>'
+              f'<xhtml:link rel="alternate" hreflang="el-gr" href="{loc}"/>'
+              f'<xhtml:link rel="alternate" hreflang="x-default" href="{loc}"/>'
+              f'<lastmod>{BUILD_DATE}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>')
 sm.append("</urlset>")
 with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as f:
     f.write("\n".join(sm) + "\n")
 
+robots = (
+    "# https://www.robotstxt.org\n"
+    "User-agent: *\n"
+    "Allow: /\n\n"
+    "# AI / answer engines are explicitly welcome (GEO)\n"
+    "User-agent: GPTBot\nAllow: /\n"
+    "User-agent: OAI-SearchBot\nAllow: /\n"
+    "User-agent: ChatGPT-User\nAllow: /\n"
+    "User-agent: ClaudeBot\nAllow: /\n"
+    "User-agent: Claude-Web\nAllow: /\n"
+    "User-agent: PerplexityBot\nAllow: /\n"
+    "User-agent: Google-Extended\nAllow: /\n"
+    "User-agent: Applebot-Extended\nAllow: /\n\n"
+    f"Sitemap: {BASE_URL}/sitemap.xml\n"
+)
 with open(os.path.join(OUT, "robots.txt"), "w", encoding="utf-8") as f:
-    f.write("User-agent: *\nAllow: /\n\nSitemap: " + BASE_URL + "/sitemap.xml\n")
+    f.write(robots)
+
+# llms.txt — structured summary for AI / answer engines (GEO/AEO)
+def _u(slug):
+    return BASE_URL + "/" + (slug + "/" if slug else "")
+llms = f"""# Aggelos Mouzakitis — Σύμβουλος Ψυχικής Υγείας
+
+> Σύμβουλος Ψυχικής Υγείας (Mental Health Counsellor) με υπόβαθρο founder και 18+ χρόνια σε product, growth και τεχνολογία. Δουλεύει ιδιωτικά με στελέχη, founders και έμπειρους επαγγελματίες, όταν ένα επαγγελματικό ζήτημα έχει και ψυχολογική διάσταση: burnout, αλλαγή καριέρας, πίεση ηγεσίας, imposter syndrome.
+
+Το διαφοροποιητικό είναι ο συνδυασμός: πραγματική επαγγελματική εμπειρία μαζί με ψυχολογικό βάθος. Δεν είναι καθαρά coaching με έτοιμο framework, ούτε αφηρημένη συζήτηση αποκομμένη από τη δουλειά. Οι συνεδρίες γίνονται online ή με φυσική παρουσία, ατομικά και με πλήρη εμπιστευτικότητα. Εκπαίδευση: MSc Integrative Counselling & Psychotherapy (University of Derby)· εγγεγραμμένος στο BACP (British Association for Counselling and Psychotherapy).
+
+## Υπηρεσίες
+- [Executive Coaching]({_u('executive-coaching')}): coaching στελεχών με ψυχολογικό βάθος — πίεση, ευθύνη, δύσκολες αποφάσεις, απομόνωση στον ρόλο, burnout στελεχών.
+- [Burnout]({_u('burnout')}): επαγγελματική εξουθένωση — τι είναι, συμπτώματα, τι το συντηρεί, γιατί η ξεκούραση/άδεια δεν αρκεί, πότε να ζητήσεις υποστήριξη.
+- [Career Coaching]({_u('career-coaching')}): αλλαγή καριέρας και σημαντικές επαγγελματικές αποφάσεις — πρακτικό και ψυχολογικό επίπεδο, ταυτότητα, ρίσκο, φόβος αλλαγής.
+- [Imposter Syndrome]({_u('imposter-syndrome')}): σύνδρομο του απατεώνα στη δουλειά — σημάδια, συμπτώματα, σύνδεση με burnout και αποφάσεις καριέρας.
+
+## Εργαλεία
+- [Burnout Diagnostic]({_u('burnout-diagnostic')}): δωρεάν εργαλείο αυτοαξιολόγησης (~8 λεπτά, 45 ερωτήσεις) που δίνει επίπεδο και ανάλυση κατά διάσταση. Ενδεικτικό, όχι κλινική διάγνωση.
+
+## Σελίδες
+- [Πώς δουλεύω]({_u('how-i-work')}): η μέθοδος — δύο επίπεδα ταυτόχρονα (πρακτικό + ψυχολογικό).
+- [Σχετικά]({_u('about')}): υπόβαθρο, εκπαίδευση, με ποιους δουλεύει.
+- [Εμπιστευτικότητα]({_u('confidentiality')}): τι μένει εμπιστευτικό και ποια είναι τα όρια.
+
+## Επικοινωνία
+- Email: {EMAIL}
+- LinkedIn: {LINKEDIN}
+- YouTube: {YOUTUBE}
+- Instagram: {INSTAGRAM}
+"""
+with open(os.path.join(OUT, "llms.txt"), "w", encoding="utf-8") as f:
+    f.write(llms)
 
 open(os.path.join(OUT, ".nojekyll"), "w").close()
-print("Built", len(PAGES_OUT), "pages + assets/sitemap/robots/404 into", OUT)
+print("Built", len(PAGES_OUT), "pages + assets/sitemap/robots/404/llms into", OUT)
