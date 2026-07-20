@@ -20,7 +20,7 @@ EMAIL      = "aggelos.mouzakitis@gmail.com"
 MAILTO     = "mailto:aggelos.mouzakitis@gmail.com?subject=%CE%95%CF%80%CE%B9%CE%BA%CE%BF%CE%B9%CE%BD%CF%89%CE%BD%CE%AF%CE%B1"
 LINKEDIN   = "https://www.linkedin.com/in/growth-product-manager/"
 YOUTUBE    = "https://www.youtube.com/channel/UCfeHgYhNWwIRgWyRW9J0YCA"
-INSTAGRAM  = "https://www.instagram.com/"      # TODO: replace with real handle
+INSTAGRAM  = "https://www.instagram.com/_aggelosmouzakitis_/"
 GA_ID      = "G-KV83RRF6ZM"
 
 # ── Design tokens (from the original site) ───────────────────────────────────
@@ -32,13 +32,18 @@ BG       = "#F5F5F5"
 
 # ── Navigation model ─────────────────────────────────────────────────────────
 # Sidebar "Υπηρεσίες" dropdown: Imposter Syndrome lives in the FOOTER only.
-SERVICES = [
+SIDEBAR_SERVICES = [
     ("executive-coaching", "Executive Coaching"),
-    ("burnout",            "Burnout"),
+    ("burnout",            "Burnout Coaching"),
     ("career-coaching",    "Career Coaching"),
 ]
 SERVICE_SLUGS = ["executive-coaching", "burnout", "career-coaching", "imposter-syndrome"]
-FOOTER_SERVICES = SERVICES + [("imposter-syndrome", "Imposter Syndrome")]
+FOOTER_SERVICES = [
+    ("executive-coaching", "Executive Coaching"),
+    ("burnout",            "Burnout"),
+    ("career-coaching",    "Career Coaching"),
+    ("imposter-syndrome",  "Imposter Syndrome"),
+]
 
 
 def rel(depth, slug):
@@ -157,6 +162,11 @@ hr.sep{{border:none;border-top:1px solid rgba(40,39,38,.2);margin:2.5rem 0}}
 .faq h3{{font-size:18px;font-weight:400;line-height:1.7;margin-bottom:.6rem;border-bottom:1px solid rgba(40,39,38,.12);padding-bottom:.4rem}}
 .faq .qa{{margin-bottom:2rem}}
 .faq p{{font-size:18px;line-height:1.75}}
+.doclist{{margin:.2rem 0 1.2rem;padding-left:1.25rem;line-height:1.75;font-size:18px}}
+.doclist li{{margin-bottom:.35rem}}
+.faq .doclist{{margin:.4rem 0 .6rem}}
+.termlist p{{margin-bottom:1rem}}
+.termlist .term{{font-weight:600;color:{TEXT};border-bottom:none}}
 .topics{{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}}
 .topic{{display:block;border:1px solid rgba(40,39,38,.12);border-radius:12px;background:#fff;padding:1.4rem 1.5rem;text-decoration:none;color:{TEXT};transition:border-color .18s,box-shadow .18s,transform .18s}}
 .topic:hover{{border-color:rgba(26,127,55,.5);box-shadow:0 8px 26px rgba(26,127,55,.10);transform:translateY(-3px)}}
@@ -265,7 +275,7 @@ def sidebar(active, depth):
     svc_group_cls = "svc-group" if svc_open else "svc-group collapsed"
     svc_links = "".join(
         f'<a href="{rel(depth, s)}" class="{ "active" if active==s else "" }">{label}</a>'
-        for s, label in SERVICES
+        for s, label in SIDEBAR_SERVICES
     )
     def social(href, label, icon):
         return (f'<a class="sb-social" href="{href}" target="_blank" rel="noopener" title="{label}">'
@@ -283,7 +293,7 @@ def sidebar(active, depth):
     </a>
     <nav class="sb-nav">
       <a class="nav-item{cls('')}" href="{rel(depth,'')}"><span style="display:flex;flex-shrink:0">{IC_HOME}</span><span>Αρχική</span></a>
-      <a class="nav-item{cls('how-i-work')}" href="{rel(depth,'how-i-work')}"><span style="display:flex;flex-shrink:0">{IC_COMPASS}</span><span>Μέθοδος</span></a>
+      <a class="nav-item{cls('how-i-work')}" href="{rel(depth,'how-i-work')}"><span style="display:flex;flex-shrink:0">{IC_COMPASS}</span><span>Πώς δουλεύω</span></a>
       <div class="{svc_group_cls}" id="svcGroup">
         <button class="svc-toggle{' active' if svc_open else ''}" id="svcToggle" aria-expanded="{'true' if svc_open else 'false'}">
           <span class="svc-left"><span style="display:flex;flex-shrink:0">{IC_LAYERS}</span><span>Υπηρεσίες</span></span>{IC_CHEV}
@@ -299,8 +309,8 @@ def sidebar(active, depth):
     <div class="sb-cta-wrap">
       <div class="sb-cta-box">
         <div class="sb-cta-lbl">Burnout Diagnostic</div>
-        <div class="sb-cta-txt">Ένα σύντομο, δωρεάν τεστ αυτοαξιολόγησης. Περίπου 8 λεπτά.</div>
-        <a class="sb-cta-btn" href="{rel(depth,'burnout-diagnostic')}">Ξεκινήστε το τεστ →</a>
+        <div class="sb-cta-txt">Ένα σύντομο, δωρεάν εργαλείο αυτοαξιολόγησης. Περίπου 8 λεπτά.</div>
+        <a class="sb-cta-btn" href="{rel(depth,'burnout-diagnostic')}">Ξεκίνα το Diagnostic →</a>
       </div>
     </div>
   </div>
@@ -314,7 +324,7 @@ def mobile_nav(active, depth):
     return f"""
 <nav id="mnav">
   {tab('', 'Αρχική', IC_HOME)}
-  {tab('how-i-work', 'Μέθοδος', IC_COMPASS)}
+  {tab('how-i-work', 'Πώς δουλεύω', IC_COMPASS)}
   {tab('burnout', 'Burnout', IC_PULSE)}
   {tab('burnout-diagnostic', 'Diagnostic', IC_CLIP)}
 </nav>"""
@@ -348,7 +358,7 @@ def footer(depth):
     <div class="site-ft-col">
       <div class="site-ft-h">Ιστότοπος</div>
       <div class="site-ft-row"><a href="{rel(depth,'')}">Αρχική</a></div>
-      <div class="site-ft-row"><a href="{rel(depth,'how-i-work')}">Μέθοδος</a></div>
+      <div class="site-ft-row"><a href="{rel(depth,'how-i-work')}">Πώς δουλεύω</a></div>
       <div class="site-ft-row"><a href="{rel(depth,'about')}">Σχετικά</a></div>
       <div class="site-ft-row"><a href="{rel(depth,'burnout-diagnostic')}">Burnout Diagnostic</a></div>
       <div class="site-ft-row"><a href="{rel(depth,'confidentiality')}">Εμπιστευτικότητα</a></div>
@@ -389,13 +399,23 @@ def sec_html(label, inner):
     return f'<section class="sec"><h2>{label}</h2><div>{inner}</div></section>'
 
 
-def diag_cta(depth, label="Ξεκινήστε το Burnout Diagnostic →"):
+def diag_cta(depth, label="Κάνε το Burnout Diagnostic →"):
     return f'<div style="margin-top:1.4rem"><a class="cta-btn" href="{rel(depth,"burnout-diagnostic")}">{label}</a></div>'
 
 
+def _ans(a):
+    # allow HTML answers (lists); wrap plain strings in <p>
+    return a if a.lstrip().startswith("<") else f"<p>{a}</p>"
+
+
 def faq(items):
-    qa = "".join(f'<div class="qa"><h3>{q}</h3><p>{a}</p></div>' for q, a in items)
+    qa = "".join(f'<div class="qa"><h3>{q}</h3>{_ans(a)}</div>' for q, a in items)
     return f'<section class="sec"><h2>Συχνές ερωτήσεις</h2><div class="faq">{qa}</div></section>'
+
+
+def ul(items):
+    lis = "".join(f"<li>{x}</li>" for x in items)
+    return f'<ul class="doclist">{lis}</ul>'
 
 
 def il(depth, slug, text):
@@ -430,7 +450,7 @@ for name in os.listdir(ASSETS):
         shutil.copy2(src, dst)
 
 import pages_content as PC
-for spec in PC.build(rel, A, sec, sec_html, faq, diag_cta, il):
+for spec in PC.build(rel, A, sec, sec_html, faq, diag_cta, il, ul):
     emit(spec["slug"], page(spec["slug"], spec["depth"], spec["title"],
                             spec["desc"], spec["main"], spec["og"],
                             spec.get("extra_ld", ""), spec.get("wrap", "wrap")))
