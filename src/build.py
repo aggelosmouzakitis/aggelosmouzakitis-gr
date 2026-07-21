@@ -86,6 +86,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
 #main-scroll{{flex:1;overflow-y:auto;overflow-x:hidden;background:#fff;color:{TEXT}}}
 #main-scroll a{{color:{ACCENT};text-underline-offset:3px;text-decoration-thickness:1px}}
 #main-scroll a:hover{{color:{ACCENT_D};text-decoration-thickness:2px}}
+#main-scroll a.cta-btn,#main-scroll a.cta-btn:hover{{color:#fff;text-decoration:none}}
+#main-scroll a.cta-ghost,#main-scroll a.cta-ghost:hover{{color:{TEXT};text-decoration:none}}
+#main-scroll a.cta-ghost:hover{{color:{ACCENT}}}
 #main-scroll strong{{font-weight:400;color:{TEXT};border-bottom:1px solid rgba(40,39,38,.3);padding-bottom:1px}}
 #main-scroll::-webkit-scrollbar{{width:4px}}
 #main-scroll::-webkit-scrollbar-thumb{{background:rgba(40,39,38,.15)}}
