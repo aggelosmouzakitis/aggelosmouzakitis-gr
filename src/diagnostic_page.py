@@ -130,9 +130,10 @@ UI = {
         "start": "Ξεκίνα",
     },
     "q": {"of": "Ερώτηση {n} από {t}", "pct": "{p}% ολοκληρώθηκε", "back": "Πίσω", "next": "Επόμενη", "last": "Δες το αποτέλεσμα"},
-    "gate": {"eyebrow": "Ένα τελευταίο, προαιρετικό βήμα", "h1": "Θέλεις να λάβεις το αποτέλεσμα και στο email σου;",
-             "p": "Μπορείς να δεις το αποτέλεσμα αμέσως, είτε αφήσεις email είτε όχι.",
-             "label": "Email — προαιρετικό", "back": "Πίσω", "show": "Δες το αποτέλεσμα"},
+    "gate": {"eyebrow": "Ένα τελευταίο βήμα", "h1": "Συμπλήρωσε το email σου για να δεις το αποτέλεσμα.",
+             "p": "Θα δεις το επίπεδο και την ανάλυσή σου αμέσως μετά.",
+             "label": "Email", "err": "Παρακαλώ συμπλήρωσε ένα έγκυρο email.",
+             "back": "Πίσω", "show": "Δες το αποτέλεσμα"},
     "res": {"eyebrow": "Το αποτέλεσμά σου", "score": "Συνολικό σκορ:", "suffix": "/ 5",
             "highest": "Η περιοχή με τη μεγαλύτερη επιβάρυνση αυτή τη στιγμή είναι:",
             "meansHeading": "Τι σημαίνει πρακτικά",
@@ -165,6 +166,16 @@ DIAG_STYLE = """
 """
 
 
+# EmailJS lead-notification. Reuses the same keys as aggelosmouzakitis.com so the
+# emails land in the same inbox. Add the .gr domain (and the *.github.io preview host)
+# to EmailJS "Allowed Origins" (Account -> Security) or sends from the new domain are
+# blocked. Swap these for a Greek-specific service/template/key to keep GR leads apart.
+EMAILJS_SNIPPET = (
+    '<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>'
+    '<script>(function(){if(window.emailjs){emailjs.init({publicKey:"bfBcHLXj2nKaev_lT"});}})();</script>'
+)
+
+
 def render(head, sidebar, footer, mobile_nav, JS, rel):
     d = 1
     slug = "burnout-diagnostic"
@@ -178,6 +189,7 @@ def render(head, sidebar, footer, mobile_nav, JS, rel):
     diag_js = DIAG_JS.replace("/*__DATA__*/", data).replace(
         "__FOOTER__", ft.replace("\\", "\\\\").replace("`", "\\`").replace("</", "<\\/"))
     return (head(TITLE, DESC, slug, d, "img/og/burnout-diagnostic.png", bc="Burnout Diagnostic")
+            + EMAILJS_SNIPPET
             + '<div id="root">' + sidebar(slug, d)
             + '<div id="main-scroll"><main id="main" class="wrap">' + DIAG_STYLE
             + '<div id="diag-app"></div>' + '</main></div></div>'
@@ -189,6 +201,12 @@ DIAG_JS = r"""
 (function(){
   var BOOK={mail:"mailto:aggelos.mouzakitis@gmail.com?subject=Burnout%20Diagnostic"};
   var SHEET_URL="https://script.google.com/macros/s/AKfycby-gv3oCFT2q5KXvVnqRzS4PAzcMjPB8Gls5qodZJ3v4_9HKGqJHMdBCw7YYbEzIE2d/exec";
+  var EJS={service:"service_i4xq7vg",template:"template_wdsrbdo"};
+  // Identifier so GR leads are distinguishable from the .com (EN) ones in the same
+  // inbox / Sheet. Sent as `source` and `site`. Shows in the email if the EmailJS
+  // template references {{source}} (add it to the body and/or the Subject line).
+  var SOURCE="GR — aggelosmouzakitis.gr";
+  function validEmail(e){return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);}
   var FOOTER=`__FOOTER__`;
   /*__DATA__*/
 
@@ -209,7 +227,10 @@ DIAG_JS = r"""
   function scoreDims(){return DIMS.map(function(dm){var keys=[];dm.ids.forEach(function(sid){var sec=SECTIONS.filter(function(s){return s.id===sid;})[0];if(sec)sec.q.forEach(function(_,i){keys.push(sid+'-'+i);});});var nums=keys.map(function(k){return state.answers[k];}).filter(function(v){return typeof v==='number';});var ans=keys.filter(function(k){return state.answers[k]!==undefined;}).length;var th=Math.ceil(keys.length*0.7);var sc=ans>=th?avg(nums):null;return{title:dm.title,score:sc,label:secLabel(sc),interp:pick(dm,sc)};});}
   function overall(){var nums=Object.keys(state.answers).map(function(k){return state.answers[k];}).filter(function(v){return typeof v==='number';});return avg(nums);}
   function calc(){var ov=overall();var dims=scoreDims();var sorted=dims.slice().sort(function(a,b){var av=typeof a.score==='number'?a.score:-1;var bv=typeof b.score==='number'?b.score:-1;return bv-av;});var top=null;dims.forEach(function(d){if(typeof d.score==='number'&&(!top||d.score>top.score))top=d;});return{overall:ov,grade:grade(ov),desc:desc(ov),next:nextStep(ov),dims:sorted,top:top,sections:scoreSections()};}
-  function postSheet(cal){try{var body={email:state.email.trim(),overall_score:fmt(cal.overall),overall_grade:cal.grade,page_url:location.href};cal.sections.forEach(function(s){body[s.key]=fmt(s.score);});fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)}).catch(function(){});}catch(e){}}
+  function buildBreakdown(sections){return sections.map(function(s){return s.title+': '+s.label+' ('+fmt(s.score)+' / 5.00)';}).join('\n');}
+  function buildAnswers(){return FLAT.map(function(q,i){var a=state.answers[q.key];var al=a===undefined?'Καμία απάντηση':(a==='na'?'Δ/Α':String(a));return (i+1)+'. ['+q.sec+'] '+q.text+' => '+al;}).join('\n');}
+  function postSheet(cal){try{var body={source:SOURCE,site:'gr',email:state.email.trim(),overall_score:fmt(cal.overall),overall_grade:cal.grade,section_breakdown:buildBreakdown(cal.sections),all_answers:buildAnswers(),page_url:location.href};cal.sections.forEach(function(s){body[s.key]=fmt(s.score);});fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)}).catch(function(){});}catch(e){}}
+  function sendEmail(cal){if(!window.emailjs)return;try{emailjs.send(EJS.service,EJS.template,{source:SOURCE,site:'gr',user_email:state.email.trim(),overall_score:fmt(cal.overall),overall_grade:cal.grade,section_breakdown:buildBreakdown(cal.sections),all_answers:buildAnswers(),page_url:location.href}).catch(function(){});}catch(e){}}
 
   function render(){
     var totalQ=FLAT.length;
@@ -238,6 +259,7 @@ DIAG_JS = r"""
       h+='<p class="eyebrow">'+G.eyebrow+'</p><h1 class="dh1">'+G.h1+'</h1><p class="dp">'+G.p+'</p>';
       h+='<label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6e6e6e;margin-bottom:.6rem">'+G.label+'</label>';
       h+='<input type="email" id="d-email" placeholder="you@example.com" value="'+state.email.replace(/"/g,'&quot;')+'">';
+      h+='<div id="d-emailerr" style="display:none;color:#c0392b;font-size:13px;margin-top:.5rem">'+G.err+'</div>';
       h+='<div class="nav"><button class="cta-ghost" id="d-back2">'+G.back+'</button><button class="cta-btn" id="d-show">'+G.show+'</button></div>';
     } else if(state.screen==='results'&&state.results){
       var r=state.results;var R=UI.res;
@@ -264,7 +286,7 @@ DIAG_JS = r"""
     var nx=document.getElementById('d-next');if(nx)nx.onclick=function(){if(state.idx<FLAT.length-1){state.idx++;render();window.scrollTo(0,0);}else{state.screen='gate';render();window.scrollTo(0,0);}};
     var b2=document.getElementById('d-back2');if(b2)b2.onclick=function(){state.screen='question';render();window.scrollTo(0,0);};
     var em=document.getElementById('d-email');if(em)em.oninput=function(){state.email=em.value;};
-    var sh=document.getElementById('d-show');if(sh)sh.onclick=function(){state.results=calc();if(state.email.trim())postSheet(state.results);state.screen='results';render();window.scrollTo(0,0);};
+    var sh=document.getElementById('d-show');if(sh)sh.onclick=function(){var em=(state.email||'').trim();if(!validEmail(em)){var er=document.getElementById('d-emailerr');if(er)er.style.display='block';return;}state.results=calc();postSheet(state.results);sendEmail(state.results);state.screen='results';render();window.scrollTo(0,0);};
     var rt=document.getElementById('d-retake');if(rt)rt.onclick=function(){state={screen:'intro',answers:{},idx:0,email:'',results:null};render();window.scrollTo(0,0);};
     var pr=document.getElementById('d-print');if(pr)pr.onclick=function(){window.print();};
   }
