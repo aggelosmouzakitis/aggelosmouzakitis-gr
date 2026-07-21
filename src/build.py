@@ -124,15 +124,27 @@ a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visibl
 .sb-cta-btn{{display:block;text-align:center;width:100%;padding:13px 0;font-family:inherit;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;background:{ACCENT};border:1.5px solid {ACCENT};color:#fff;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}}
 .sb-cta-btn:hover{{background:{ACCENT_D};border-color:{ACCENT_D}}}
 
-/* ── MOBILE bottom nav (matches original pattern) ── */
-#mnav{{display:none}}
+/* ── MOBILE bottom nav + services bottom-sheet ── */
+#mnav,#msheet,#msheet-bd{{display:none}}
 @media (max-width:767px){{
   #root{{display:block;height:100%}}
   #sidebar{{display:none}}
   #main-scroll{{height:100%;padding-bottom:80px}}
-  #mnav{{display:flex;position:fixed;left:0;right:0;bottom:0;height:64px;background:{BG};border-top:1px solid rgba(40,39,38,.1);align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom)}}
-  #mnav a{{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;text-decoration:none;color:#565654;font-size:10px;letter-spacing:.06em;text-transform:uppercase;transition:color .15s}}
-  #mnav a.active{{color:{ACCENT}}}
+  #mnav{{display:flex;position:fixed;left:0;right:0;bottom:0;height:64px;background:{BG};border-top:1px solid rgba(40,39,38,.1);align-items:stretch;z-index:130;padding-bottom:env(safe-area-inset-bottom)}}
+  #mnav a,#mnav .mnav-btn{{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px;text-decoration:none;color:#565654;font-size:10px;letter-spacing:.06em;text-transform:uppercase;transition:color .15s;font-family:inherit;background:none;border:none;cursor:pointer}}
+  #mnav a.active,#mnav .mnav-btn.active,#mnav .mnav-btn[aria-expanded="true"]{{color:{ACCENT}}}
+  #mnav .mnav-btn .svc-chev{{display:none}}
+  #msheet-bd{{display:block;position:fixed;inset:0;background:rgba(20,20,20,.42);z-index:120;opacity:0;transition:opacity .22s ease}}
+  #msheet-bd[hidden]{{display:none}}
+  #msheet-bd.open{{opacity:1}}
+  #msheet{{display:block;position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:125;background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;box-shadow:0 -12px 34px rgba(0,0,0,.18);padding:0 0 12px;transform:translateY(140%);transition:transform .28s cubic-bezier(.2,.85,.25,1);visibility:hidden;max-height:66vh;overflow-y:auto}}
+  #msheet.open{{transform:translateY(0);visibility:visible}}
+  #msheet .msheet-grab{{display:block;width:40px;height:4px;border-radius:2px;background:rgba(40,39,38,.2);margin:9px auto 4px}}
+  #msheet .msheet-label{{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:{MUTED};padding:8px 22px 6px}}
+  #msheet a{{display:flex;align-items:center;justify-content:space-between;padding:15px 22px;text-decoration:none;font-size:16px;font-weight:500;color:{TEXT};border-top:1px solid rgba(40,39,38,.07)}}
+  #msheet a::after{{content:'›';color:rgba(40,39,38,.35);font-size:22px;line-height:1}}
+  #msheet a:active{{background:rgba(26,127,55,.06)}}
+  #msheet a.active{{color:{ACCENT_D}}}
 }}
 
 /* ── content typography ── */
@@ -434,23 +446,47 @@ def mobile_nav(active, depth):
     def tab(slug, label, icon):
         c = " active" if active == slug else ""
         return f'<a class="{c.strip()}" href="{rel(depth, slug)}">{icon}<span>{label}</span></a>'
+    svc_active = " active" if active in SERVICE_SLUGS else ""
+    svc_items = "".join(
+        f'<a href="{rel(depth,s)}" class="{ "active" if active==s else "" }">{label}</a>'
+        for s, label in SIDEBAR_SERVICES
+    )
     return f"""
 <nav id="mnav">
   {tab('', 'Αρχική', IC_HOME)}
   {tab('how-i-work', 'Πώς δουλεύω', IC_COMPASS)}
-  {tab('burnout', 'Burnout', IC_PULSE)}
+  <button id="msvc" class="mnav-btn{svc_active}" aria-expanded="false" aria-controls="msheet" aria-label="Υπηρεσίες">{IC_LAYERS}<span>Υπηρεσίες</span></button>
   {tab('burnout-diagnostic', 'Diagnostic', IC_CLIP)}
-</nav>"""
+</nav>
+<div id="msheet-bd" hidden></div>
+<div id="msheet" role="menu" aria-label="Υπηρεσίες" aria-hidden="true">
+  <span class="msheet-grab"></span>
+  <div class="msheet-label">Υπηρεσίες</div>
+  {svc_items}
+</div>"""
 
 
 JS = """
 <script>
 (function(){
+  // desktop sidebar "Υπηρεσίες" accordion
   var t=document.getElementById('svcToggle'),g=document.getElementById('svcGroup');
   if(t&&g)t.addEventListener('click',function(){
     var open=!g.classList.contains('collapsed');
     g.classList.toggle('collapsed');t.setAttribute('aria-expanded',String(!open));
   });
+  // mobile services bottom-sheet
+  var sv=document.getElementById('msvc'),sh=document.getElementById('msheet'),bd=document.getElementById('msheet-bd');
+  function closeSheet(){if(!sh)return;sh.classList.remove('open');bd.classList.remove('open');sv.setAttribute('aria-expanded','false');sh.setAttribute('aria-hidden','true');setTimeout(function(){if(!bd.classList.contains('open'))bd.hidden=true;},240);}
+  if(sv&&sh&&bd){
+    sv.addEventListener('click',function(){
+      var open=!sh.classList.contains('open');
+      if(open){bd.hidden=false;requestAnimationFrame(function(){bd.classList.add('open');});sh.classList.add('open');sv.setAttribute('aria-expanded','true');sh.setAttribute('aria-hidden','false');}
+      else{closeSheet();}
+    });
+    bd.addEventListener('click',closeSheet);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
+  }
 })();
 </script>
 """
