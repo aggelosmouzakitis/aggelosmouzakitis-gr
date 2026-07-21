@@ -182,8 +182,9 @@ hr.sep{{border:none;border-top:1px solid rgba(40,39,38,.2);margin:2.5rem 0}}
 .hero-txt{{flex:1.15 1 0;min-width:0;max-width:520px}}
 .hero-txt p{{font-size:18px;line-height:1.75;margin-bottom:1.2rem}}
 .hero-txt p:last-child{{margin-bottom:0}}
+.hero-txt .lead{{font-size:23px;font-weight:500;line-height:1.6;margin-bottom:1.4rem}}
 .hero-img{{flex:1 1 0;min-width:0}}
-.hero-img img{{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px;display:block}}
+.hero-img img{{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:14px;display:block}}
 .hero-cta{{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.8rem}}
 
 /* ── footer (matches original 3-column layout) ── */
