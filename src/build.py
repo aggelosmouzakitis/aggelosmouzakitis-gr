@@ -627,14 +627,11 @@ with open(os.path.join(OUT, "404.html"), "w", encoding="utf-8") as f:
 order = ["", "how-i-work", "executive-coaching", "burnout", "career-coaching",
          "imposter-syndrome", "burnout-diagnostic", "about", "confidentiality"]
 sm = ['<?xml version="1.0" encoding="UTF-8"?>',
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
-      'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
 for u in [x for x in order if x in PAGES_OUT]:
     loc = BASE_URL + "/" + (u + "/" if u else "")
     pr = "1.0" if u == "" else ("0.9" if u in ("burnout", "career-coaching", "burnout-diagnostic") else "0.8")
     sm.append(f'  <url><loc>{loc}</loc>'
-              f'<xhtml:link rel="alternate" hreflang="el-gr" href="{loc}"/>'
-              f'<xhtml:link rel="alternate" hreflang="x-default" href="{loc}"/>'
               f'<lastmod>{BUILD_DATE}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>')
 sm.append("</urlset>")
 with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as f:
