@@ -237,6 +237,7 @@ PERSON_ID = BASE_URL + "/#person"
 ORG_ID    = BASE_URL + "/#practice"
 SITE_ID   = BASE_URL + "/#website"
 BUILD_DATE = "2026-07-20"
+BUILD_DT = BUILD_DATE + "T00:00:00+00:00"  # ISO 8601 datetime for schema.org date fields
 
 
 def strip_html(s):
@@ -292,8 +293,11 @@ def page_ld(title, desc, canonical, og_img, depth, bc, faq_items, service, ptype
         "@type": ptype, "@id": canonical + "#webpage", "url": canonical, "name": title,
         "description": desc, "isPartOf": {"@id": SITE_ID}, "inLanguage": "el-GR",
         "about": {"@id": PERSON_ID}, "primaryImageOfPage": og_img,
-        "datePublished": "2026-07-20", "dateModified": BUILD_DATE,
+        "datePublished": BUILD_DT, "dateModified": BUILD_DT,
     }
+    # ProfilePage requires mainEntity: the person the profile is about.
+    if ptype == "ProfilePage":
+        webpage["mainEntity"] = {"@id": PERSON_ID}
     # Breadcrumbs
     crumbs = [{"@type": "ListItem", "position": 1, "name": "Αρχική", "item": BASE_URL + "/"}]
     if bc:
