@@ -21,7 +21,7 @@ MAILTO     = "mailto:aggelos.mouzakitis@gmail.com?subject=%CE%95%CF%80%CE%B9%CE%
 LINKEDIN   = "https://www.linkedin.com/in/growth-product-manager/"
 YOUTUBE    = "https://www.youtube.com/channel/UCfeHgYhNWwIRgWyRW9J0YCA"
 INSTAGRAM  = "https://www.instagram.com/_aggelosmouzakitis_/"
-GA_ID      = "G-KV83RRF6ZM"
+GA_ID      = "G-H5ZDTS9FC8"   # Greek-market GA4 property (aggelosmouzakitis.gr)
 
 # ── Design tokens (from the original site) ───────────────────────────────────
 ACCENT   = "#1a7f37"
