@@ -1,0 +1,57 @@
+# aggelosmouzakitis.gr — static, redirect-only property (no build step).
+# Pin the publish directory to the repo root so the _redirects file is always
+# part of the deploy output regardless of any UI setting. See _redirects for the
+# actual 301 map (everything → aggelosmouzakitis.com/el/…).
+[build]
+  publish = "."
+  command = ""
+
+# Redirects are ALSO declared here (belt-and-suspenders): netlify.toml redirects
+# are read directly from the deploy and applied before the _redirects file, so
+# the retirement fires even if the _redirects file were ever missed.
+[[redirects]]
+  from = "/about/*"
+  to = "https://aggelosmouzakitis.com/el/about/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/confidentiality/*"
+  to = "https://aggelosmouzakitis.com/el/confidentiality/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/how-i-work/*"
+  to = "https://aggelosmouzakitis.com/el/1-to-1/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/executive-coaching/*"
+  to = "https://aggelosmouzakitis.com/el/1-to-1/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/career-coaching/*"
+  to = "https://aggelosmouzakitis.com/el/1-to-1/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/burnout-diagnostic/*"
+  to = "https://aggelosmouzakitis.com/el/startingdiagnostic/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/burnout/*"
+  to = "https://aggelosmouzakitis.com/el/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/imposter-syndrome/*"
+  to = "https://aggelosmouzakitis.com/el/"
+  status = 301
+  force = true
+# Catch-all — must be last.
+[[redirects]]
+  from = "/*"
+  to = "https://aggelosmouzakitis.com/el/"
+  status = 301
+  force = true
