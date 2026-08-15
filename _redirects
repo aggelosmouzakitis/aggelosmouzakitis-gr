@@ -1,0 +1,37 @@
+# aggelosmouzakitis.gr — REDIRECT-ONLY property.
+# The Greek site has been consolidated into aggelosmouzakitis.com/el/.
+# These are true server-side 301s (Netlify). GitHub Pages cannot issue
+# path-level 301s, so this domain must be served by Netlify — see README.md.
+# The trailing "!" forces the redirect even if a file of the same path exists.
+# Each old path is mapped to its closest genuine destination (never a blanket
+# "everything → /el/"). Both the with-slash and no-slash forms are listed so
+# each resolves in a single hop. See ../aggelosmouzakitispersonal/site-unification/04-redirect-map.csv
+
+# Home
+/                     https://aggelosmouzakitis.com/el/                    301!
+
+# Direct equivalents
+/about                 https://aggelosmouzakitis.com/el/about/             301!
+/about/                https://aggelosmouzakitis.com/el/about/             301!
+/confidentiality       https://aggelosmouzakitis.com/el/confidentiality/   301!
+/confidentiality/      https://aggelosmouzakitis.com/el/confidentiality/   301!
+
+# Method + service pages → the single 1:1 offer (how-i-work merged into it)
+/how-i-work            https://aggelosmouzakitis.com/el/1-to-1/            301!
+/how-i-work/           https://aggelosmouzakitis.com/el/1-to-1/            301!
+/executive-coaching    https://aggelosmouzakitis.com/el/1-to-1/            301!
+/executive-coaching/   https://aggelosmouzakitis.com/el/1-to-1/            301!
+/career-coaching       https://aggelosmouzakitis.com/el/1-to-1/            301!
+/career-coaching/      https://aggelosmouzakitis.com/el/1-to-1/            301!
+
+# Topic pages with no direct equivalent → Greek home (revisit if a Greek
+# resource page is later created for these; then repoint here).
+/burnout               https://aggelosmouzakitis.com/el/                   301!
+/burnout/              https://aggelosmouzakitis.com/el/                   301!
+/imposter-syndrome     https://aggelosmouzakitis.com/el/                   301!
+/imposter-syndrome/    https://aggelosmouzakitis.com/el/                   301!
+/burnout-diagnostic    https://aggelosmouzakitis.com/el/startingdiagnostic/  301!
+/burnout-diagnostic/   https://aggelosmouzakitis.com/el/startingdiagnostic/  301!
+
+# Catch-all for any other/old path (must be LAST; specific rules above win)
+/*                     https://aggelosmouzakitis.com/el/                   301!
