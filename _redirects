@@ -16,22 +16,24 @@
 /confidentiality       https://aggelosmouzakitis.com/el/confidentiality/   301!
 /confidentiality/      https://aggelosmouzakitis.com/el/confidentiality/   301!
 
-# Method + service pages → the single 1:1 offer (how-i-work merged into it)
+# how-i-work merged into the single 1:1 offer
 /how-i-work            https://aggelosmouzakitis.com/el/1-to-1/            301!
 /how-i-work/           https://aggelosmouzakitis.com/el/1-to-1/            301!
-/executive-coaching    https://aggelosmouzakitis.com/el/1-to-1/            301!
-/executive-coaching/   https://aggelosmouzakitis.com/el/1-to-1/            301!
-/career-coaching       https://aggelosmouzakitis.com/el/1-to-1/            301!
-/career-coaching/      https://aggelosmouzakitis.com/el/1-to-1/            301!
 
-# Topic pages with no direct equivalent → Greek home (revisit if a Greek
-# resource page is later created for these; then repoint here).
-/burnout               https://aggelosmouzakitis.com/el/                   301!
-/burnout/              https://aggelosmouzakitis.com/el/                   301!
-/imposter-syndrome     https://aggelosmouzakitis.com/el/                   301!
-/imposter-syndrome/    https://aggelosmouzakitis.com/el/                   301!
+# burnout-diagnostic → the Greek Starting Diagnostic (more specific; listed first)
 /burnout-diagnostic    https://aggelosmouzakitis.com/el/startingdiagnostic/  301!
 /burnout-diagnostic/   https://aggelosmouzakitis.com/el/startingdiagnostic/  301!
+
+# Topic/service pages → their restored Greek equivalents under /el/.
+# (Previously pointed at /el/1-to-1/ or /el/ before these pages were restored.)
+/executive-coaching    https://aggelosmouzakitis.com/el/executive-coaching/  301!
+/executive-coaching/   https://aggelosmouzakitis.com/el/executive-coaching/  301!
+/career-coaching       https://aggelosmouzakitis.com/el/career-coaching/   301!
+/career-coaching/      https://aggelosmouzakitis.com/el/career-coaching/   301!
+/burnout               https://aggelosmouzakitis.com/el/burnout/           301!
+/burnout/              https://aggelosmouzakitis.com/el/burnout/           301!
+/imposter-syndrome     https://aggelosmouzakitis.com/el/imposter-syndrome/  301!
+/imposter-syndrome/    https://aggelosmouzakitis.com/el/imposter-syndrome/  301!
 
 # Catch-all for any other/old path (must be LAST; specific rules above win)
 /*                     https://aggelosmouzakitis.com/el/                   301!

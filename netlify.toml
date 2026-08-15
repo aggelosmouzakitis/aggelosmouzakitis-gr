@@ -24,14 +24,15 @@
   to = "https://aggelosmouzakitis.com/el/1-to-1/"
   status = 301
   force = true
+# Service/topic pages → their restored Greek equivalents under /el/.
 [[redirects]]
   from = "/executive-coaching/*"
-  to = "https://aggelosmouzakitis.com/el/1-to-1/"
+  to = "https://aggelosmouzakitis.com/el/executive-coaching/"
   status = 301
   force = true
 [[redirects]]
   from = "/career-coaching/*"
-  to = "https://aggelosmouzakitis.com/el/1-to-1/"
+  to = "https://aggelosmouzakitis.com/el/career-coaching/"
   status = 301
   force = true
 [[redirects]]
@@ -41,12 +42,12 @@
   force = true
 [[redirects]]
   from = "/burnout/*"
-  to = "https://aggelosmouzakitis.com/el/"
+  to = "https://aggelosmouzakitis.com/el/burnout/"
   status = 301
   force = true
 [[redirects]]
   from = "/imposter-syndrome/*"
-  to = "https://aggelosmouzakitis.com/el/"
+  to = "https://aggelosmouzakitis.com/el/imposter-syndrome/"
   status = 301
   force = true
 # Catch-all — must be last.
