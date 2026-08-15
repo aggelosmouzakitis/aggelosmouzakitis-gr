@@ -30,8 +30,8 @@
 /burnout/              https://aggelosmouzakitis.com/el/                   301!
 /imposter-syndrome     https://aggelosmouzakitis.com/el/                   301!
 /imposter-syndrome/    https://aggelosmouzakitis.com/el/                   301!
-/burnout-diagnostic    https://aggelosmouzakitis.com/el/burnout-diagnostic/  301!
-/burnout-diagnostic/   https://aggelosmouzakitis.com/el/burnout-diagnostic/  301!
+/burnout-diagnostic    https://aggelosmouzakitis.com/el/startingdiagnostic/  301!
+/burnout-diagnostic/   https://aggelosmouzakitis.com/el/startingdiagnostic/  301!
 
 # Catch-all for any other/old path (must be LAST; specific rules above win)
 /*                     https://aggelosmouzakitis.com/el/                   301!
